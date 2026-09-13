@@ -2,7 +2,7 @@
 substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
-  paper_mono_font: fonts/DejaVuSans.ttf
+  paper_mono_font: "https://raw.githubusercontent.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
   device_name: paper-mono
   ha_weather_entity: weather.estacion_meteorologica
   ha_indoor_temperature_entity: sensor.ws2900_v2_02_03_indoor_temperature
@@ -26,6 +26,7 @@ substitutions:
   quiet_hours_end: "08:00"
   status_led_low_battery_threshold: "20"
   ha_notification_text_entity: input_text.paper_mono_notification
+  components_source: github://hectorzin/M5PaperMono-HomeAssistant-ESPHome@main
 
 controls:
   blocks:
@@ -71,4 +72,4 @@ wifi:
     dns1: 192.168.137.1
 
 packages:
-  paper_mono_base: !include packages/paper_mono_base.yaml
+  paper_mono_base: github://hectorzin/M5PaperMono-HomeAssistant-ESPHome/packages/paper_mono_base.yaml@main
