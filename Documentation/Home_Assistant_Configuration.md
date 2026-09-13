@@ -52,5 +52,5 @@ The global `DEMO` fallback is entered only after the API has been absent for 60 
 
 Native API actions are also exposed:
 
-- `sleep_now`: requests ESP32 light sleep and bypasses redirection to PMIC shutdown merely because quiet hours are active. `wake_at` may be empty; an empty value uses the normal aligned refresh timer, while a valid `HH:MM` schedules that time of day. An active `quiet_hours_user_override` can still defer entry into light sleep.
-- `shutdown_until`: requests M5PM1 shutdown and requires a valid `wake_at` in `HH:MM` format.
+- `sleep_now`: requests the unified sleep pipeline. If the current time is inside quiet hours the device takes the PMIC shutdown path; otherwise it enters ESP32 light sleep. `wake_at` may be empty; an empty value uses the normal aligned refresh timer, while a valid `HH:MM` schedules that time of day for light sleep.
+- `shutdown_until`: forces the M5PM1 shutdown architecture and requires a valid `wake_at` in `HH:MM` format.

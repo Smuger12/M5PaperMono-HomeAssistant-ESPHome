@@ -29,7 +29,7 @@ CONF_LIGHT_SLEEP_WAKE_RECOVERY = "light_sleep_wake_recovery"
 CONF_STATUS_LED_SLEEP_PENDING = "status_led_sleep_pending"
 CONF_STATUS_LED_PREVIEW_SLOT = "status_led_preview_slot"
 CONF_STATUS_LED_BLUE_SWITCH = "status_led_blue_switch"
-CONF_QUIET_HOURS_SLEEP_DISPLAY = "quiet_hours_sleep_display"
+CONF_SLEEP_VISUAL_ACTIVE = "sleep_visual_active"
 CONF_QUIET_HOURS_USER_OVERRIDE = "quiet_hours_user_override"
 CONF_BATTERY_DISPLAY_LEVEL = "battery_display_level"
 CONF_EXTERNAL_POWER = "external_power"
@@ -80,7 +80,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Required(CONF_STATUS_LED_SLEEP_PENDING): cv.use_id(globals.GlobalsComponent),
         cv.Required(CONF_STATUS_LED_PREVIEW_SLOT): cv.use_id(globals.GlobalsComponent),
         cv.Required(CONF_STATUS_LED_BLUE_SWITCH): cv.use_id(switch.Switch),
-        cv.Required(CONF_QUIET_HOURS_SLEEP_DISPLAY): cv.use_id(globals.GlobalsComponent),
+        cv.Required(CONF_SLEEP_VISUAL_ACTIVE): cv.use_id(globals.GlobalsComponent),
         cv.Required(CONF_QUIET_HOURS_USER_OVERRIDE): cv.use_id(globals.GlobalsComponent),
         cv.Required(CONF_BATTERY_DISPLAY_LEVEL): cv.use_id(globals.GlobalsComponent),
         cv.Required(CONF_EXTERNAL_POWER): cv.use_id(binary_sensor.BinarySensor),
@@ -118,7 +118,7 @@ async def to_code(config):
     status_led_sleep_pending = await cg.get_variable(config[CONF_STATUS_LED_SLEEP_PENDING])
     status_led_preview_slot = await cg.get_variable(config[CONF_STATUS_LED_PREVIEW_SLOT])
     status_led_blue_switch = await cg.get_variable(config[CONF_STATUS_LED_BLUE_SWITCH])
-    quiet_hours_sleep_display = await cg.get_variable(config[CONF_QUIET_HOURS_SLEEP_DISPLAY])
+    sleep_visual_active = await cg.get_variable(config[CONF_SLEEP_VISUAL_ACTIVE])
     quiet_hours_user_override = await cg.get_variable(config[CONF_QUIET_HOURS_USER_OVERRIDE])
     battery_display_level = await cg.get_variable(config[CONF_BATTERY_DISPLAY_LEVEL])
     external_power = await cg.get_variable(config[CONF_EXTERNAL_POWER])
@@ -149,7 +149,7 @@ async def to_code(config):
     cg.add(var.set_status_led_sleep_pending(status_led_sleep_pending))
     cg.add(var.set_status_led_preview_slot(status_led_preview_slot))
     cg.add(var.set_status_led_blue_switch(status_led_blue_switch))
-    cg.add(var.set_quiet_hours_sleep_display(quiet_hours_sleep_display))
+    cg.add(var.set_sleep_visual_active(sleep_visual_active))
     cg.add(var.set_quiet_hours_user_override(quiet_hours_user_override))
     cg.add(var.set_battery_display_level(battery_display_level))
     cg.add(var.set_external_power(external_power))

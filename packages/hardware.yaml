@@ -9,9 +9,7 @@ psram:
   speed: 80MHz
 
 external_components:
-  - source:
-      type: local
-      path: components
+  - source: ${components_source}
     components: [papermono_epaper, m5pm1, m5ioe1, papermono_activity, papermono_imu, papermono_rtc, controls, papermono_nfc]
 
 i2c:

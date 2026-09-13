@@ -85,7 +85,13 @@ enum class LightSleepTimerReason : uint8_t {
   QUIET_HOURS_START = 1,
 };
 
-enum class ShutdownPhase : uint8_t {
+enum class SleepMode : uint8_t {
+  NONE = 0,
+  NORMAL = 1,
+  QUIET_HOURS = 2,
+};
+
+enum class SleepPhase : uint8_t {
   NONE = 0,
   WAIT_DISPLAY = 1,
 };
@@ -137,8 +143,8 @@ class PaperMonoActivityComponent : public Component {
   }
   void set_status_led_preview_slot(globals::GlobalsComponent<int> *slot) { this->status_led_preview_slot_ = slot; }
   void set_status_led_blue_switch(switch_::Switch *blue) { this->status_led_blue_switch_ = blue; }
-  void set_quiet_hours_sleep_display(globals::GlobalsComponent<bool> *value) {
-    this->quiet_hours_sleep_display_ = value;
+  void set_sleep_visual_active(globals::GlobalsComponent<bool> *value) {
+    this->sleep_visual_active_ = value;
   }
   void set_quiet_hours_user_override(globals::GlobalsComponent<bool> *value) {
     this->quiet_hours_user_override_ = value;
@@ -180,6 +186,7 @@ class PaperMonoActivityComponent : public Component {
   // True while periodic wake recovery is active and may still request periodic_wake refresh.
   bool is_periodic_wake_active() const { return this->periodic_wake_phase_ != PeriodicWakePhase::NONE; }
   bool is_in_quiet_hours() const { return this->is_in_quiet_hours_(); }
+  bool is_sleep_visual_active() const { return this->sleep_visual_active_value_(); }
 
   // True when Wi-Fi and the native API (with state subscription) are ready and
   // ha_connection_state is REAL (not CONNECTING or DEMO).
@@ -211,14 +218,20 @@ class PaperMonoActivityComponent : public Component {
   void turn_off_timeout_();
   void on_pickup_transition_();
   bool in_controls_view_() const;
-  void cancel_light_sleep_();
+  void cancel_sleep_pipeline_();
   void cancel_periodic_wake_recovery_();
   void clear_wake_recovery_flag_();
-  void run_screensaver_periodic_tick_(bool quiet_sleep_display);
-  void request_light_sleep_(PowerTransitionSource source);
-  void request_quiet_hours_shutdown_(PowerTransitionSource source);
+  void run_screensaver_periodic_tick_(bool quiet_hours_idle);
+  void request_sleep_(PowerTransitionSource source, bool force_quiet_hours = false);
+  SleepMode determine_sleep_mode_() const;
+  void set_sleep_visual_(bool active);
+  bool sleep_visual_active_value_() const;
+  void commit_sleep_visual_refresh_(const char *source);
+  void apply_status_led_sleep_pending_(bool pending);
+  void turn_off_frontlight_for_sleep_();
   bool sleep_timeout_expired_() const;
-  bool can_enter_light_sleep_() const;
+  bool is_sleep_pipeline_active_() const { return this->sleep_phase_ != SleepPhase::NONE; }
+  bool can_enter_sleep_() const;
   bool can_begin_shutdown_() const;
   bool is_network_api_ready_() const;
   bool is_home_assistant_connected_() const;
@@ -227,9 +240,10 @@ class PaperMonoActivityComponent : public Component {
   void process_pmic_ha_final_full_recovery_();
   void complete_pmic_ha_final_full_();
   void process_periodic_wake_recovery_();
-  void process_shutdown_pending_();
+  void process_sleep_pending_();
   void disable_wifi_for_sleep_();
   void enable_wifi_after_wake_(bool timer_wake);
+  void enter_physical_sleep_();
   void enter_light_sleep_();
   void handle_light_sleep_wake_(esp_sleep_wakeup_cause_t cause, LightSleepTimerReason timer_reason);
   uint32_t current_time_bucket_() const;
@@ -240,13 +254,13 @@ class PaperMonoActivityComponent : public Component {
   uint32_t seconds_until_quiet_hours_end_() const;
   uint32_t seconds_until_next_time_of_day_(int minutes_from_midnight) const;
   void handle_boot_wake_source_();
-  void sync_battery_display_for_shutdown_();
+  void sync_battery_display_for_sleep_();
   void process_pmic_hw_recovery_();
   void complete_pmic_wake_hardware_recovery();
   void begin_pmic_ha_final_full_recovery_();
   bool begin_quiet_hours_shutdown_();
-  void cancel_shutdown_();
   void prepare_controls_exit_for_sleep_();
+  bool abort_light_sleep_entry_(bool keep_pending);
   uint32_t timeout_ms_() const {
     const uint32_t seconds = this->frontlight_timeout_seconds_ != nullptr ? this->frontlight_timeout_seconds_->value() : 30U;
     return seconds == 0 ? 30000U : seconds * 1000U;
@@ -291,7 +305,7 @@ class PaperMonoActivityComponent : public Component {
   globals::GlobalsComponent<bool> *status_led_sleep_pending_{nullptr};
   globals::GlobalsComponent<int> *status_led_preview_slot_{nullptr};
   switch_::Switch *status_led_blue_switch_{nullptr};
-  globals::GlobalsComponent<bool> *quiet_hours_sleep_display_{nullptr};
+  globals::GlobalsComponent<bool> *sleep_visual_active_{nullptr};
   globals::GlobalsComponent<bool> *quiet_hours_user_override_{nullptr};
   globals::GlobalsComponent<float> *battery_display_level_{nullptr};
   binary_sensor::BinarySensor *external_power_{nullptr};
@@ -310,7 +324,6 @@ class PaperMonoActivityComponent : public Component {
   globals::RestoringGlobalStringComponent<std::string, 64> *quiet_hours_end_{nullptr};
   uint32_t last_activity_ms_{0};
   uint32_t sleep_eligible_activity_ms_{0};
-  uint32_t shutdown_eligible_activity_ms_{0};
   uint32_t periodic_wake_activity_ms_{0};
   uint32_t periodic_wake_settle_start_ms_{0};
   uint32_t periodic_wake_started_ms_{0};
@@ -322,7 +335,6 @@ class PaperMonoActivityComponent : public Component {
   bool frontlight_on_{false};
   uint8_t frontlight_brightness_percent_{0};
   bool pickup_cleanup_pending_{false};
-  bool light_sleep_pending_{false};
   bool sleep_timeout_logged_{false};
   bool periodic_wake_recovery_timeout_logged_{false};
   bool pending_pmic_motion_activity_{false};
@@ -338,7 +350,10 @@ class PaperMonoActivityComponent : public Component {
   m5ioe1::M5IOE1Component *m5ioe1_{nullptr};
   papermono_nfc::PaperMonoNfc *nfc_{nullptr};
   PeriodicWakePhase periodic_wake_phase_{PeriodicWakePhase::NONE};
-  ShutdownPhase shutdown_phase_{ShutdownPhase::NONE};
+  SleepPhase sleep_phase_{SleepPhase::NONE};
+  SleepMode pending_sleep_mode_{SleepMode::NONE};
+  bool force_quiet_hours_sleep_{false};
+  bool sleep_visual_refresh_requested_{false};
   PowerTransitionSource pending_power_source_{PowerTransitionSource::SLEEP_TIMEOUT};
   LightSleepTimerReason light_sleep_timer_reason_{LightSleepTimerReason::NORMAL_REFRESH};
   bool ha_manual_light_sleep_armed_{false};

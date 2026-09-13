@@ -54,7 +54,7 @@ font:
 # These are the same compact Material Design weather pictograms used by the
 # reference e-paper dashboard. ESPHome embeds them at build time, so they stay
 # monochrome and do not add a runtime dependency. Each Home Assistant weather
-# state has its own image; sleeping_moon_icon is reserved for the ZZZ screen.
+# state has its own image; sleeping_moon_icon is reserved for the quiet-hours ZZZ screen.
 # Keep the initial page deterministic and ignore the FT6336G startup edge
 # that can otherwise be reported as a touch before the panel is settled.
 esphome:
@@ -655,7 +655,7 @@ display:
         // Header: the HA time source is intentionally the sole source of truth.
         const auto now = id(ha_time).now();
         if (now.is_valid()) {
-          if (id(quiet_hours_sleep_display)) {
+          if (id(sleep_visual_active)) {
             const int header_time_center = 112;
             it.printf(header_time_center, 43, id(font_time), Color::BLACK,
                       TextAlign::TOP_CENTER, "ZZZ");

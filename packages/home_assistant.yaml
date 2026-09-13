@@ -159,7 +159,7 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'false'
-  - id: quiet_hours_sleep_display
+  - id: sleep_visual_active
     type: bool
     restore_value: no
     initial_value: 'false'

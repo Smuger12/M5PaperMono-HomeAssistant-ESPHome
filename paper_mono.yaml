@@ -1,5 +1,7 @@
 # Firmware entry point. This is the only firmware YAML the user needs to edit.
 substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
   device_name: paper-mono
   ha_weather_entity: weather.estacion_meteorologica
   ha_indoor_temperature_entity: sensor.ws2900_v2_02_03_indoor_temperature
@@ -59,14 +61,13 @@ controls:
         - entity_id: light.pergola
           name: Pérgola
 
+# Local network customization; intentionally kept out of the public package.
+wifi:
+  manual_ip:
+    static_ip: 192.168.137.227
+    gateway: 192.168.137.1
+    subnet: 255.255.255.0
+    dns1: 192.168.137.1
+
 packages:
-  runtime_config: !include packages/runtime_config.yaml
-  core: !include packages/core.yaml
-  connectivity: !include packages/connectivity.yaml
-  hardware: !include packages/hardware.yaml
-  battery: !include packages/battery.yaml
-  status_led: !include packages/status_led.yaml
-  home_assistant_controls: !include packages/home_assistant_controls.yaml
-  home_assistant_runtime: !include packages/home_assistant.yaml
-  ui: !include packages/ui.yaml
-  frontlight: !include packages/frontlight.yaml
+  paper_mono_base: !include packages/paper_mono_base.yaml
