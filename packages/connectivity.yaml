@@ -16,11 +16,11 @@ api:
             id(papermono_activity_hub).request_shutdown_until(wake_at);
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: "${wifi_ssid}"
+  password: "${wifi_password}"
   ap:
     ssid: "${device_name}-setup"
-    password: !secret wifi_password
+    password: "${wifi_password}"
 
 # HA is the clock authority. It receives timezone and time through the native
 # API; unlike the previous literal, it has no synthetic fallback.
