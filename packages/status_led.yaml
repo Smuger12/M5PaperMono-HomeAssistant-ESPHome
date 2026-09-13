@@ -10,6 +10,77 @@ switch:
       mode:
         output: true
 
+output:
+  # These outputs are deliberately virtual.  The status_led_update script is
+  # still the only code that owns the three physical LED channels.
+  - platform: template
+    id: status_led_manual_red
+    type: float
+    write_action:
+      - lambda: |-
+          id(status_led_manual_red_level) = state;
+          id(status_led_manual_override) = true;
+          id(status_led_update).execute();
+  - platform: template
+    id: status_led_manual_green
+    type: float
+    write_action:
+      - lambda: |-
+          id(status_led_manual_green_level) = state;
+          id(status_led_manual_override) = true;
+          id(status_led_update).execute();
+  - platform: template
+    id: status_led_manual_blue
+    type: float
+    write_action:
+      - lambda: |-
+          id(status_led_manual_blue_level) = state;
+          id(status_led_manual_override) = true;
+          id(status_led_update).execute();
+
+light:
+  - platform: rgb
+    id: paper_mono_led
+    name: "Paper Mono LED"
+    icon: "mdi:led-on"
+    red: status_led_manual_red
+    green: status_led_manual_green
+    blue: status_led_manual_blue
+    restore_mode: RESTORE_DEFAULT_OFF
+    on_turn_off:
+      - lambda: |-
+          id(status_led_manual_override) = false;
+          id(status_led_update).execute();
+    effects:
+      - automation:
+          name: "Rojo"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 0%, blue: 0%}
+      - automation:
+          name: "Verde"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 0%, green: 100%, blue: 0%}
+      - automation:
+          name: "Azul"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 0%, green: 0%, blue: 100%}
+      - automation:
+          name: "Amarillo"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 100%, blue: 0%}
+      - automation:
+          name: "Cian"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 0%, green: 100%, blue: 100%}
+      - automation:
+          name: "Magenta"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 0%, blue: 100%}
+      - automation:
+          name: "Blanco"
+          sequence:
+            - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 100%, blue: 100%}
+
   - platform: gpio
     id: color_preview_blue
     internal: true
@@ -21,6 +92,22 @@ switch:
         output: true
 
 globals:
+  - id: status_led_manual_override
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: status_led_manual_red_level
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: status_led_manual_green_level
+    type: float
+    restore_value: no
+    initial_value: '0.0'
+  - id: status_led_manual_blue_level
+    type: float
+    restore_value: no
+    initial_value: '0.0'
   - id: active_color_preview_slot
     type: int
     restore_value: no
@@ -140,6 +227,7 @@ script:
 
           bool red_on = false;
           bool green_on = false;
+          bool blue_on = false;
 
           if (id(notification_alert_active) && !id(status_led_sleep_pending) &&
               !id(light_sleep_wake_recovery)) {
@@ -190,6 +278,44 @@ script:
             default:
               break;
           }
+
+          // Manual RGB is a logical request only. Quantize it to the nearest
+          // one of the seven physical colors; brightness is intentionally
+          // ignored because the hardware has no usable PWM path.
+          if (id(status_led_manual_override) && !id(notification_alert_active) &&
+              !id(status_led_alert_pulse_in_progress) &&
+              !id(status_led_periodic_pulse_in_progress)) {
+            const float raw_r = id(status_led_manual_red_level);
+            const float raw_g = id(status_led_manual_green_level);
+            const float raw_b = id(status_led_manual_blue_level);
+            const float maximum = std::max(raw_r, std::max(raw_g, raw_b));
+            if (maximum > 0.0001f) {
+              // RGB outputs may already include brightness. Normalize first so
+              // brightness changes do not alter the selected physical color.
+              const float r = raw_r / maximum;
+              const float g = raw_g / maximum;
+              const float b = raw_b / maximum;
+              const float scores[7] = {
+                  (r - 1) * (r - 1) + g * g + b * b,
+                  r * r + (g - 1) * (g - 1) + b * b,
+                  r * r + g * g + (b - 1) * (b - 1),
+                  (r - 1) * (r - 1) + (g - 1) * (g - 1) + b * b,
+                  r * r + (g - 1) * (g - 1) + (b - 1) * (b - 1),
+                  (r - 1) * (r - 1) + g * g + (b - 1) * (b - 1),
+                  (r - 1) * (r - 1) + (g - 1) * (g - 1) + (b - 1) * (b - 1)};
+              int best = 0;
+              for (int i = 1; i < 7; i++) if (scores[i] < scores[best]) best = i;
+              red_on = best == 0 || best == 3 || best == 5 || best == 6;
+              green_on = best == 1 || best == 3 || best == 4 || best == 6;
+              blue_on = best == 2 || best == 4 || best == 5 || best == 6;
+            } else {
+              // All channels can briefly be zero while RGB brightness changes;
+              // retain the last physical state instead of selecting a color.
+              red_on = id(status_led_red_hw_on);
+              green_on = id(status_led_green_hw_on);
+              blue_on = id(status_led_blue_hw_on);
+            }
+          }
           }
 
           // A color preview owns the physical RGB LED temporarily. Keep computing
@@ -208,7 +334,6 @@ script:
               ESP_LOGI("status_led", "Status LED green: %s", green_on ? "ON" : "OFF");
               id(status_led_green_hw_on) = green_on;
             }
-            const bool blue_on = false;
             if (blue_on != id(status_led_blue_hw_on)) {
               if (blue_on) id(color_preview_blue).turn_on(); else id(color_preview_blue).turn_off();
               id(status_led_blue_hw_on) = blue_on;
