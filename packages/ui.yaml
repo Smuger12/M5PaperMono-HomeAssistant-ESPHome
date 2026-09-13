@@ -1,50 +1,50 @@
 font:
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_time
     size: 72
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_body
     size: 24
     glyphsets:
       - GF_Latin_Core
     glyphs: ["µ³"]
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_title
     size: 48
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_connecting
     size: 32
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_connecting_state
     size: 24
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_subtitle
     size: 28
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_label
     size: 18
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_control_name
     size: 20
     glyphsets:
       - GF_Latin_Core
     glyphs: ["áéíóúÁÉÍÓÚñÑüÜ"]
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_device_battery
     size: 20
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_notification_title
     size: 28
     glyphsets:
       - GF_Latin_Core
     glyphs: ["áéíóúÁÉÍÓÚñÑüÜ"]
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_notification_body
     size: 32
     glyphsets:
       - GF_Latin_Core
     glyphs: ["áéíóúÁÉÍÓÚñÑüÜ"]
-  - file: "fonts/DejaVuSans.ttf"
+  - file: ${paper_mono_font}
     id: font_notification_body_small
     size: 24
     glyphsets:

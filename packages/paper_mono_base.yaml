@@ -30,6 +30,7 @@ substitutions:
   # Local development keeps using ./components. The public example overrides
   # this with the repository's GitHub external-components source.
   components_source: components
+  paper_mono_font: "https://raw.githubusercontent.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
 
 packages:
   runtime_config: !include runtime_config.yaml

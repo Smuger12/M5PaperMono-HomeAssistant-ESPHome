@@ -2,6 +2,7 @@
 substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  paper_mono_font: fonts/DejaVuSans.ttf
   device_name: paper-mono
   ha_weather_entity: weather.estacion_meteorologica
   ha_indoor_temperature_entity: sensor.ws2900_v2_02_03_indoor_temperature

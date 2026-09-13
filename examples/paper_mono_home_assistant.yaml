@@ -32,6 +32,7 @@ substitutions:
   # The shared package keeps the local-development default for this value.
   # The public example must fetch the custom components from GitHub instead.
   components_source: github://hectorzin/M5PaperMono-HomeAssistant-ESPHome@main
+  paper_mono_font: "https://raw.githubusercontent.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
 
 controls:
   blocks:
