@@ -10,6 +10,16 @@ switch:
       mode:
         output: true
 
+  - platform: gpio
+    id: color_preview_blue
+    internal: true
+    restore_mode: ALWAYS_OFF
+    pin:
+      m5ioe1_id: m5ioe1_hub
+      number: 8
+      mode:
+        output: true
+
 output:
   # These outputs are deliberately virtual.  The status_led_update script is
   # still the only code that owns the three physical LED channels.
@@ -80,16 +90,6 @@ light:
           name: "Blanco"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 100%, blue: 100%}
-
-  - platform: gpio
-    id: color_preview_blue
-    internal: true
-    restore_mode: ALWAYS_OFF
-    pin:
-      m5ioe1_id: m5ioe1_hub
-      number: 8
-      mode:
-        output: true
 
 globals:
   - id: status_led_manual_override

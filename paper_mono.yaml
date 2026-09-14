@@ -64,4 +64,9 @@ controls:
           name: Pérgola
 
 packages:
-  paper_mono_base: github://hectorzin/M5PaperMono-HomeAssistant-ESPHome/packages/paper_mono_base.yaml@main
+  paper_mono:
+    url: https://github.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome
+    ref: main
+    files:
+      - packages/paper_mono_base.yaml
+    refresh: 0s
