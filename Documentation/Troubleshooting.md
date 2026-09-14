@@ -38,4 +38,4 @@ The normal quiet-hours scheduler uses PMIC shutdown, but `SLEEP_TIMEOUT` and `sl
 
 ## ESPHome compilation
 
-Run `esphome config paper_mono.yaml` first. Confirm `secrets.yaml`, font readability, and a compatible ESPHome version. The first ESP-IDF/PlatformIO download is large. On Windows, use an ASCII project path if font loading fails.
+In ESPHome Device Builder, use **Validate** first and confirm that `secrets.yaml`, the remote package block, and a compatible ESPHome version are available. The first ESP-IDF/PlatformIO download is large. The CLI command `esphome config paper_mono.yaml` applies only to a local development checkout, not to the normal Home Assistant installation. On Windows, use an ASCII project path if font loading fails.

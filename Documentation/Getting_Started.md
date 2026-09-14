@@ -1,44 +1,63 @@
 # Getting Started
 
+This is the recommended installation path for Home Assistant users. It uses ESPHome Device Builder and the shared package published on GitHub; cloning this repository or copying `packages/`, `components/`, `custom_components/`, or `external_components/` is not required.
+
 ## Requirements
 
 - M5Stack PaperMono C153
-- ESPHome 2026.6.x or later
+- ESPHome Device Builder in Home Assistant
 - Local Wi-Fi and Home Assistant with the ESPHome integration
 - Several gigabytes of free storage; the first ESP-IDF/PlatformIO build may require about 10 GB
 
 The project targets an ESP32-S3 with 16 MB flash and octal PSRAM. The custom e-paper component is fixed at 800×480.
 
-## Project layout
+## Recommended installation in Home Assistant
 
-`paper_mono.yaml` is the only firmware YAML intended for normal user editing. It defines substitutions, Home Assistant entity IDs, control blocks, and package includes.
+1. Install or open **ESPHome Device Builder** in Home Assistant.
+2. Create a new ESP32 device and open its YAML editor.
+3. In the Builder's `secrets.yaml`, add credentials using placeholders, never a real password in shared documentation:
 
-| Path | Responsibility |
-|---|---|
-| `packages/` | Connectivity, hardware, dashboard, controls, power, battery, LEDs, and runtime settings |
-| `components/` | Custom ESPHome components and drivers |
-| `fonts/` | Display fonts |
-| `Documentation/` | User and developer documentation |
-| `secrets.yaml` | Local Wi-Fi credentials; do not commit it |
+   ```yaml
+   wifi_ssid: "TU_WIFI"
+   wifi_password: "TU_PASSWORD"
+   ```
 
-## Secrets and configuration
+4. In the device YAML, use those secrets:
 
-```powershell
-Copy-Item secrets.example.yaml secrets.yaml
-```
+   ```yaml
+   substitutions:
+     wifi_ssid: !secret wifi_ssid
+     wifi_password: !secret wifi_password
+   ```
 
-Set the Wi-Fi credentials, then edit the substitutions in `paper_mono.yaml`, especially `device_name` and the `ha_*_entity` values. HEAD uses DHCP. If a deployment requires a fixed address, add an ESPHome `manual_ip` configuration as a local network customization without assuming any repository-wide address.
+5. Add the Home Assistant entity IDs you want to display or control. See [Home Assistant Configuration](Home_Assistant_Configuration.md) and [Rooms and Controls](Rooms_and_Controls.md).
+6. Optionally configure the control blocks and NFC IDs described in [NFC](NFC.md).
+7. Keep the remote package block in the YAML:
 
-## Validate, compile, and install
+   ```yaml
+   packages:
+     paper_mono:
+       url: https://github.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome
+       ref: main
+       files:
+         - packages/paper_mono_base.yaml
+       refresh: 0s
+   ```
 
-```text
-esphome config paper_mono.yaml
-esphome compile paper_mono.yaml
-esphome run paper_mono.yaml
-```
+   The relative includes inside `paper_mono_base.yaml` resolve within the remote repository checkout. `refresh: 0s` lets builds check the current `main` version instead of keeping an indefinitely stale package copy.
 
-`run` installs the firmware using the selected ESPHome transport. OTA is enabled after the device is reachable. Home Assistant discovers the device through the ESPHome native API.
+8. Save the YAML and validate it in ESPHome Builder.
+9. Perform the first installation over USB if the device is not yet reachable over Wi-Fi.
+10. After the device is online, install later updates over OTA.
 
-The device exposes its frontlight, battery voltage and level, external-power state, NFC last UID, and runtime configuration entities. Control cards do not create additional Home Assistant entities: they consume and operate the existing entities configured in `paper_mono.yaml`. See [Home Assistant Configuration](Home_Assistant_Configuration.md).
+The device exposes its frontlight, battery voltage and level, external-power state, NFC last UID, and runtime configuration entities. Control cards do not create additional Home Assistant entities: they consume and operate the existing entities configured in the device YAML. See [Home Assistant Configuration](Home_Assistant_Configuration.md).
+
+## Updating the firmware
+
+Because the YAML consumes `main` with `refresh: 0s`, compile and install again from ESPHome Builder to obtain a newly published project version. You do not need to copy the packages or components again. OTA can be used once the device is reachable.
+
+## Development notes
+
+The repository layout, local `components/` tree, and CLI commands are intended for firmware development and troubleshooting, not for the normal Home Assistant installation. See [Architecture](Architecture.md) when working on the implementation itself.
 
 If Wi-Fi credentials cannot be used, the configured fallback AP is `${device_name}-setup`, protected by the Wi-Fi secret password. On Windows, non-ASCII project paths can cause font-loading errors; use an ASCII path if that occurs.

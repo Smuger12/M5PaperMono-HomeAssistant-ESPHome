@@ -1,6 +1,8 @@
 # Architecture
 
-`paper_mono.yaml` supplies substitutions and package includes. ESPHome code generation reads local schemas under `components/` and wires generated entities and callbacks into C++.
+The public user YAML supplies substitutions and consumes `packages/paper_mono_base.yaml` from the GitHub repository. The relative includes in that package resolve inside the remote checkout. In this repository's development checkout, the same package can be inspected locally and ESPHome code generation reads the local schemas under `components/`.
+
+The local layout and source references below are for development and troubleshooting. They are not files that a normal Home Assistant user needs to clone or copy manually.
 
 | Component | Responsibility |
 |---|---|

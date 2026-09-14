@@ -4,7 +4,7 @@ ESPHome firmware for the M5Stack PaperMono C153. It combines the 800×480 SSD167
 
 The device presents a weather and energy dashboard, opens room-specific control pages, and can operate lights, switches, covers, climate devices, vacuums, and media players configured in `paper_mono.yaml`. Touch, motion, NFC cards, periodic refreshes, and quiet-hours power management are part of the normal runtime behavior.
 
-The firmware entry point is [`paper_mono.yaml`](paper_mono.yaml). Hardware and behavior are split into reusable YAML packages under [`packages/`](packages/), while custom ESPHome components live under [`components/`](components/).
+For a normal installation, create a device YAML in Home Assistant's ESPHome Device Builder and consume the published firmware package directly from GitHub. You do not need to clone this repository or copy its `packages/` or `components/` directories. The repository files are useful as reference and for development.
 
 ## Hardware
 

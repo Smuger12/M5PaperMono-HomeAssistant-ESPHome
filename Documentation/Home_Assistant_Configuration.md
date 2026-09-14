@@ -2,7 +2,7 @@
 
 ## Compile-time configuration
 
-Edit `paper_mono.yaml` for values substituted into the generated firmware:
+Edit the device YAML created in ESPHome Device Builder for values substituted into the generated firmware (the repository example is `paper_mono.yaml`):
 
 | Substitution | Default | Purpose |
 |---|---:|---|

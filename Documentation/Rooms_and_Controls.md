@@ -2,7 +2,7 @@
 
 ## Configuration model
 
-Controls are declared in `paper_mono.yaml` under `controls.blocks`. Each block requires a name and an `entities` list, but the current schema permits that list to be empty. `nfc_id` is optional.
+Controls are declared in the device YAML under `controls.blocks` (the repository example is `paper_mono.yaml`). Each block requires a name and an `entities` list, but the current schema permits that list to be empty. `nfc_id` is optional.
 
 ```yaml
 controls:
