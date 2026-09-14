@@ -1,7 +1,7 @@
 # Firmware entry point. This is the only firmware YAML the user needs to edit.
 substitutions:
-  wifi_ssid: "HECTOR-PC-WIFI"
-  wifi_password: "9999999999"
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
   paper_mono_font: "https://raw.githubusercontent.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
   device_name: paper-mono
   ha_weather_entity: weather.estacion_meteorologica
