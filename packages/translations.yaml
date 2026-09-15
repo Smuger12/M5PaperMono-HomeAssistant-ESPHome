@@ -1,3 +1,5 @@
-# Compile-time language selector. The include path is resolved after
-# substitutions, so the selected catalog travels with the remote package.
-substitutions: !include translations/${language}.yaml
+# Compile-time language selector. The selected catalog is a package fragment
+# with a concrete substitutions mapping, so packages never receives an
+# IncludeFile as the value of substitutions.
+packages:
+  selected_language: !include translations/${language}.yaml
