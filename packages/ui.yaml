@@ -578,14 +578,14 @@ display:
         text_or_dash(outdoor_temp_text, sizeof(outdoor_temp_text), outdoor_temp_available, id(ha_weather_temperature).state, 28.4f, "%.1f C");
         text_or_dash(indoor_temp_text, sizeof(indoor_temp_text), indoor_temp_available, id(ha_indoor_temperature).state, 24.1f, "%.1f C");
         text_or_dash(humidity_text, sizeof(humidity_text), humidity_available, id(ha_weather_humidity).state, 48.0f, "${humidity} %.0f %%");
-        text_or_dash(wind_text, sizeof(wind_text), wind_speed_available, id(ha_weather_wind_speed).state, 12.0f, "Viento %.0f km/h");
+        text_or_dash(wind_text, sizeof(wind_text), wind_speed_available, id(ha_weather_wind_speed).state, 12.0f, "${wind} %.0f km/h");
         if (!use_demo_globally && !humidity_available) strcpy(weather_detail_text, "${humidity} -");
         else snprintf(weather_detail_text, sizeof(weather_detail_text), "${humidity} %.0f %%", use_demo_globally ? 48.0f : id(ha_weather_humidity).state);
         text_or_dash(indoor_humidity_text, sizeof(indoor_humidity_text), indoor_humidity_available, id(ha_indoor_humidity).state, 48.0f, "${humidity} %.0f %%");
         text_or_dash(co2_text, sizeof(co2_text), co2_available, id(ha_indoor_co2).state, 612.0f, "CO2 %.0f ppm");
         text_or_dash(pm_indoor_text, sizeof(pm_indoor_text), pm25_indoor_available, id(ha_indoor_pm25).state, 7.0f, "PM2.5 %.0f µg/m³");
         text_or_dash(pm_outdoor_text, sizeof(pm_outdoor_text), pm25_outdoor_available, id(ha_outdoor_pm25).state, 12.0f, "PM2.5 %.0f µg/m³");
-        text_or_dash(voc_text, sizeof(voc_text), voc_available, id(ha_indoor_voc).state, 82.0f, "COV %.0f");
+        text_or_dash(voc_text, sizeof(voc_text), voc_available, id(ha_indoor_voc).state, 82.0f, "${voc} %.0f");
         power_text(solar_text, sizeof(solar_text), solar_available, use_demo_globally ? 3200.0f : id(ha_solar_power).state);
         const bool solar_flow_active = use_demo_globally ? true :
                                        (solar_available && id(ha_solar_power).state > 5.0f);
@@ -690,12 +690,12 @@ display:
           it.print(32, y + 30, id(font_title), Color::BLACK, temperature);
           it.print(32, y + 90, id(font_body), Color::BLACK, humidity);
         };
-        draw_environment_left("EXTERIOR", outdoor_temp_text, humidity_text, 161);
+        draw_environment_left("${outdoor}", outdoor_temp_text, humidity_text, 161);
         it.printf(350, 191, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", wind_text);
         it.printf(350, 251, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", pm_outdoor_text);
 
         it.line(28, 313, w - 28, 313, Color::BLACK);
-        draw_environment_left("INTERIOR", indoor_temp_text, indoor_humidity_text, 331);
+        draw_environment_left("${indoor}", indoor_temp_text, indoor_humidity_text, 331);
         it.printf(350, 361, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", co2_text);
         it.printf(350, 421, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", pm_indoor_text);
 
