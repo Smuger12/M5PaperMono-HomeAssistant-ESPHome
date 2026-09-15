@@ -4,6 +4,7 @@
 # These defaults make the package reusable on its own while allowing a local
 # device configuration to override every value below.
 substitutions:
+  language: "en"
   device_name: paper-mono
   ha_weather_entity: weather.home
   ha_indoor_temperature_entity: sensor.indoor_temperature
@@ -33,6 +34,7 @@ substitutions:
   paper_mono_font: "https://raw.githubusercontent.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
 
 packages:
+  translations: !include translations.yaml
   runtime_config: !include runtime_config.yaml
   core: !include core.yaml
   connectivity: !include connectivity.yaml

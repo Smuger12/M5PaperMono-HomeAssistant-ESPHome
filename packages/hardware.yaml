@@ -25,7 +25,7 @@ m5ioe1:
 text_sensor:
   - platform: template
     id: nfc_last_uid
-    name: "Última tarjeta NFC"
+    name: "${nfc_last_uid_name}"
     icon: "mdi:nfc"
     update_interval: never
 

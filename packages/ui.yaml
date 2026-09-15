@@ -463,7 +463,7 @@ display:
         it.line(margin_x, 80, w - margin_x, 80, Color::BLACK);
         it.line(margin_x, btn_top - 20, w - margin_x, btn_top - 20, Color::BLACK);
         it.image(w / 2, 36, id(notification_bell_icon), ImageAlign::TOP_CENTER, Color::BLACK, Color::WHITE);
-        it.printf(w / 2, 118, id(font_notification_title), Color::BLACK, TextAlign::TOP_CENTER, "NOTIFICACION");
+        it.printf(w / 2, 118, id(font_notification_title), Color::BLACK, TextAlign::TOP_CENTER, "${notification_title}");
         const std::string &message = id(notification_pending_text).empty()
                                          ? id(ha_notification_text).state
                                          : id(notification_pending_text);
@@ -528,15 +528,15 @@ display:
           text_y += line_height;
         }
         it.rectangle(btn_left, btn_top, btn_right - btn_left, btn_bottom - btn_top, Color::BLACK);
-        it.printf(w / 2, btn_top + 18, id(font_connecting), Color::BLACK, TextAlign::TOP_CENTER, "CERRAR");
+        it.printf(w / 2, btn_top + 18, id(font_connecting), Color::BLACK, TextAlign::TOP_CENTER, "${close}");
       } else if (!id(controls_view)) {
         if (id(pending_controls_entry) || id(ha_connection_state) == 0) {
           it.image(240, 200, id(home_assistant_icon), ImageAlign::CENTER, Color::BLACK, Color::WHITE);
-          it.printf(240, 370, id(font_connecting), Color::BLACK, TextAlign::TOP_CENTER, "CONECTANDO");
+          it.printf(240, 370, id(font_connecting), Color::BLACK, TextAlign::TOP_CENTER, "${connecting}");
           if (id(wifi_connected_state))
-            it.printf(240, 435, id(font_connecting_state), Color::BLACK, TextAlign::TOP_CENTER, "Home Assistant...");
+            it.printf(240, 435, id(font_connecting_state), Color::BLACK, TextAlign::TOP_CENTER, "${home_assistant_connecting}");
           else
-            it.printf(240, 435, id(font_connecting_state), Color::BLACK, TextAlign::TOP_CENTER, "Wi-Fi...");
+            it.printf(240, 435, id(font_connecting_state), Color::BLACK, TextAlign::TOP_CENTER, "${wifi_connecting}");
         } else {
         // DEMO is strictly a global fallback after the API has been absent for
         // 60 seconds. While HA is available, invalid individual fields are
@@ -577,11 +577,11 @@ display:
         };
         text_or_dash(outdoor_temp_text, sizeof(outdoor_temp_text), outdoor_temp_available, id(ha_weather_temperature).state, 28.4f, "%.1f C");
         text_or_dash(indoor_temp_text, sizeof(indoor_temp_text), indoor_temp_available, id(ha_indoor_temperature).state, 24.1f, "%.1f C");
-        text_or_dash(humidity_text, sizeof(humidity_text), humidity_available, id(ha_weather_humidity).state, 48.0f, "Humedad %.0f %%");
+        text_or_dash(humidity_text, sizeof(humidity_text), humidity_available, id(ha_weather_humidity).state, 48.0f, "${humidity} %.0f %%");
         text_or_dash(wind_text, sizeof(wind_text), wind_speed_available, id(ha_weather_wind_speed).state, 12.0f, "Viento %.0f km/h");
-        if (!use_demo_globally && !humidity_available) strcpy(weather_detail_text, "Humedad -");
-        else snprintf(weather_detail_text, sizeof(weather_detail_text), "Humedad %.0f %%", use_demo_globally ? 48.0f : id(ha_weather_humidity).state);
-        text_or_dash(indoor_humidity_text, sizeof(indoor_humidity_text), indoor_humidity_available, id(ha_indoor_humidity).state, 48.0f, "Humedad %.0f %%");
+        if (!use_demo_globally && !humidity_available) strcpy(weather_detail_text, "${humidity} -");
+        else snprintf(weather_detail_text, sizeof(weather_detail_text), "${humidity} %.0f %%", use_demo_globally ? 48.0f : id(ha_weather_humidity).state);
+        text_or_dash(indoor_humidity_text, sizeof(indoor_humidity_text), indoor_humidity_available, id(ha_indoor_humidity).state, 48.0f, "${humidity} %.0f %%");
         text_or_dash(co2_text, sizeof(co2_text), co2_available, id(ha_indoor_co2).state, 612.0f, "CO2 %.0f ppm");
         text_or_dash(pm_indoor_text, sizeof(pm_indoor_text), pm25_indoor_available, id(ha_indoor_pm25).state, 7.0f, "PM2.5 %.0f µg/m³");
         text_or_dash(pm_outdoor_text, sizeof(pm_outdoor_text), pm25_outdoor_available, id(ha_outdoor_pm25).state, 12.0f, "PM2.5 %.0f µg/m³");
@@ -666,8 +666,8 @@ display:
             it.printf(28, 31, id(font_time), Color::BLACK, "%02d:%02d", now.hour, displayed_minute);
             // ESPHome reports Sunday as 1 through Saturday as 7. Convert to a
             // zero-based Spanish lookup so the device locale is irrelevant.
-            static const char *const WEEKDAYS[] = {"DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"};
-            static const char *const MONTHS[] = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
+            static const char *const WEEKDAYS[] = {"${weekday_sunday}", "${weekday_monday}", "${weekday_tuesday}", "${weekday_wednesday}", "${weekday_thursday}", "${weekday_friday}", "${weekday_saturday}"};
+            static const char *const MONTHS[] = {"${month_january}", "${month_february}", "${month_march}", "${month_april}", "${month_may}", "${month_june}", "${month_july}", "${month_august}", "${month_september}", "${month_october}", "${month_november}", "${month_december}"};
             const int weekday = (now.day_of_week + 6) % 7;
             const int month = now.month >= 1 && now.month <= 12 ? now.month - 1 : 0;
             char date_text[32];
@@ -780,7 +780,7 @@ display:
         it.printf(battery_x, energy_bottom_y + 30, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", battery_text);
 
         if (use_demo_globally)
-          it.print(404, 100, id(font_label), Color::BLACK, "DEMO");
+          it.print(404, 100, id(font_label), Color::BLACK, "${demo}");
         }
       } else {
         // Controls use a reusable 2x3 geometry: six 214x236 cards with
@@ -957,7 +957,7 @@ display:
             if (on) {
               draw_percentage_arc(x, y, brightness, brightness_valid);
               if (id(controls_id).color_edit_mode_at(index))
-                it.print(x + card_w / 2, y + 68, id(font_label), Color::BLACK, TextAlign::TOP_CENTER, "COLOR");
+                it.print(x + card_w / 2, y + 68, id(font_label), Color::BLACK, TextAlign::TOP_CENTER, "${color}");
               const auto edit_mode = id(controls_id).light_edit_mode_at(index);
               if (edit_mode == esphome::controls::LightEditMode::RGB)
                 it.print(x + card_w / 2, y + 89, id(font_title), Color::BLACK, TextAlign::TOP_CENTER, "RGB");
@@ -991,7 +991,7 @@ display:
           for (char &c : state) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
           const bool on = state == "on";
           const bool off = state == "off";
-          const char *status = on ? "ON" : off ? "OFF" : "No disponible";
+          const char *status = on ? "${switch_on}" : off ? "${switch_off}" : "${unavailable}";
           if (on)
             it.circle(x + card_w / 2, y + 98, 46, Color::BLACK);
           it.image(x + card_w / 2, y + 98, id(control_switch_icon), ImageAlign::CENTER, Color::BLACK, Color::WHITE);
@@ -1021,14 +1021,14 @@ display:
           std::string state = id(controls_id).state_at(index);
           if (state.empty()) state = "unknown";
           for (char &c : state) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-          const char *status = "Desconocido";
-          if (state == "cleaning") status = "Limpiando";
-          else if (state == "docked") status = "En base";
-          else if (state == "paused") status = "Pausado";
-          else if (state == "idle") status = "Listo";
-          else if (state == "returning") status = "Volviendo";
-          else if (state == "error") status = "Error";
-          else if (state == "unavailable") status = "No disponible";
+          const char *status = "${unknown}";
+          if (state == "cleaning") status = "${vacuum_cleaning}";
+          else if (state == "docked") status = "${vacuum_docked}";
+          else if (state == "paused") status = "${vacuum_paused}";
+          else if (state == "idle") status = "${vacuum_idle}";
+          else if (state == "returning") status = "${vacuum_returning}";
+          else if (state == "error") status = "${vacuum_error}";
+          else if (state == "unavailable") status = "${unavailable}";
           it.image(x + card_w / 2, y + 105, id(control_vacuum_icon), ImageAlign::CENTER, Color::BLACK, Color::WHITE);
           it.printf(x + card_w / 2, y + 150, id(font_connecting_state), Color::BLACK, TextAlign::TOP_CENTER, "%s", status);
           button_icon(x + 10, y + 185, id(control_vacuum_start_icon));
@@ -1046,7 +1046,7 @@ display:
           };
           std::string title = media_text("media_title", id(font_connecting_state));
           const std::string artist = media_text("media_artist", id(font_control_name));
-          if (title.empty()) title = "Ready to Play";
+          if (title.empty()) title = "${ready_to_play}";
           it.printf(x + card_w / 2, y + 48, id(font_connecting_state), Color::BLACK, TextAlign::TOP_CENTER, "%s", title.c_str());
           if (!artist.empty()) it.printf(x + card_w / 2, y + 74, id(font_control_name), Color::BLACK, TextAlign::TOP_CENTER, "%s", artist.c_str());
           if (id(controls_id).media_volume_valid(index)) {

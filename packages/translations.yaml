@@ -1,0 +1,3 @@
+# Compile-time language selector. The include path is resolved after
+# substitutions, so the selected catalog travels with the remote package.
+substitutions: !include translations/${language}.yaml

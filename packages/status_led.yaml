@@ -51,7 +51,7 @@ output:
 light:
   - platform: rgb
     id: paper_mono_led
-    name: "Paper Mono LED"
+    name: "${status_led_name}"
     icon: "mdi:led-on"
     red: status_led_manual_red
     green: status_led_manual_green
@@ -63,31 +63,31 @@ light:
           id(status_led_update).execute();
     effects:
       - automation:
-          name: "Rojo"
+          name: "${effect_red}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 0%, blue: 0%}
       - automation:
-          name: "Verde"
+          name: "${effect_green}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 0%, green: 100%, blue: 0%}
       - automation:
-          name: "Azul"
+          name: "${effect_blue}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 0%, green: 0%, blue: 100%}
       - automation:
-          name: "Amarillo"
+          name: "${effect_yellow}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 100%, blue: 0%}
       - automation:
-          name: "Cian"
+          name: "${effect_cyan}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 0%, green: 100%, blue: 100%}
       - automation:
-          name: "Magenta"
+          name: "${effect_magenta}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 0%, blue: 100%}
       - automation:
-          name: "Blanco"
+          name: "${effect_white}"
           sequence:
             - light.turn_on: {id: paper_mono_led, effect: None, red: 100%, green: 100%, blue: 100%}
 

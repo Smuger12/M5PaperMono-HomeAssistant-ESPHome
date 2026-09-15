@@ -13,10 +13,10 @@ sensor:
   - platform: m5pm1
     m5pm1_id: m5pm1_pmu
     battery_voltage:
-      name: "Paper Mono Battery Voltage"
+      name: "${battery_voltage_name}"
       id: paper_mono_battery_voltage
     battery_level:
-      name: "Paper Mono Battery Level"
+      name: "${battery_level_name}"
       id: paper_mono_battery_level
       on_value:
         - script.execute: paper_mono_battery_ingest_sample
@@ -25,7 +25,7 @@ binary_sensor:
   - platform: m5pm1
     m5pm1_id: m5pm1_pmu
     external_power:
-      name: "Paper Mono External Power"
+      name: "${external_power_name}"
       id: paper_mono_external_power
       on_state:
         - script.execute: paper_mono_battery_update_display

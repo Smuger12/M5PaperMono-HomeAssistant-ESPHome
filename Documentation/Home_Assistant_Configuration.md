@@ -4,6 +4,8 @@
 
 Edit the device YAML created in ESPHome Device Builder for values substituted into the generated firmware (the repository example is `paper_mono.yaml`):
 
+Set `language: "en"` for English (the default) or `language: "es"` for Spanish. The public PaperMono entity names follow this selection. Because ESPHome currently derives entity IDs from those visible names, changing language may change the corresponding PaperMono entity IDs when the new firmware is installed. Internal firmware IDs, user-configured Home Assistant entity IDs, and names provided in `controls:` remain unchanged.
+
 | Substitution | Default | Purpose |
 |---|---:|---|
 | `device_name` | `paper-mono` | ESPHome node name |

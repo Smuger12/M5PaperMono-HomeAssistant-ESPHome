@@ -6,7 +6,7 @@ output:
 light:
   - platform: monochromatic
     output: paper_mono_frontlight_output
-    name: Frontlight
+    name: ${frontlight_name}
     id: paper_mono_frontlight
     restore_mode: ALWAYS_OFF
     default_transition_length: 0s
