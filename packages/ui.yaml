@@ -699,7 +699,6 @@ display:
         it.printf(350, 361, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", co2_text);
         it.printf(350, 421, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", pm_indoor_text);
         
-        /*
         // Fixed 2x2 energy nodes. Parallel central risers keep grid and
         // battery paths independent without attaching either one to a node.
         it.line(28, 489, w - 28, 489, Color::BLACK);
@@ -717,6 +716,8 @@ display:
         auto arrow_left = [&](int x, int y) { it.filled_triangle(x - 8, y, x + 4, y - 6, x + 4, y + 6, Color::BLACK); };
         auto arrow_up = [&](int x, int y) { it.filled_triangle(x, y - 8, x - 6, y + 4, x + 6, y + 4, Color::BLACK); };
         auto arrow_down = [&](int x, int y) { it.filled_triangle(x, y + 8, x - 6, y - 4, x + 6, y - 4, Color::BLACK); };
+
+      if (false) {
         it.line(solar_x + 27, energy_top_y, house_x - 27, energy_top_y, Color::BLACK);
         it.line(grid_x + 27, energy_bottom_y, grid_riser_x, energy_bottom_y, Color::BLACK);
         it.line(battery_riser_x, energy_bottom_y, battery_x - 27, energy_bottom_y, Color::BLACK);
@@ -730,7 +731,7 @@ display:
           arrow_down(grid_riser_x, energy_mid_y);                              // bus -> riser
           arrow_left(180, energy_bottom_y);                                    // riser -> RED
         }
-        */
+
         if (use_demo_globally || (house_available && id(ha_house_power).state > 5.0f)) arrow_right(300, energy_top_y); // bus -> CASA
         if (battery_charge_flow_active) {
           arrow_down(battery_riser_x, energy_mid_y);                           // bus -> riser
@@ -780,7 +781,7 @@ display:
         it.printf(house_x, energy_top_y + 41, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", house_text);
         it.printf(battery_x, energy_bottom_y - 54, id(font_label), Color::BLACK, TextAlign::TOP_CENTER, "%s", soc_text);
         it.printf(battery_x, energy_bottom_y + 30, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", battery_text);
-
+      }
         if (use_demo_globally)
           it.print(404, 100, id(font_label), Color::BLACK, "${demo}");
         }
