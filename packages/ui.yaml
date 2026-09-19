@@ -698,7 +698,8 @@ display:
         draw_environment_left("${indoor}", indoor_temp_text, indoor_humidity_text, 331);
         it.printf(350, 361, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", co2_text);
         it.printf(350, 421, id(font_body), Color::BLACK, TextAlign::TOP_CENTER, "%s", pm_indoor_text);
-
+        
+        /*
         // Fixed 2x2 energy nodes. Parallel central risers keep grid and
         // battery paths independent without attaching either one to a node.
         it.line(28, 489, w - 28, 489, Color::BLACK);
@@ -729,6 +730,7 @@ display:
           arrow_down(grid_riser_x, energy_mid_y);                              // bus -> riser
           arrow_left(180, energy_bottom_y);                                    // riser -> RED
         }
+        */
         if (use_demo_globally || (house_available && id(ha_house_power).state > 5.0f)) arrow_right(300, energy_top_y); // bus -> CASA
         if (battery_charge_flow_active) {
           arrow_down(battery_riser_x, energy_mid_y);                           // bus -> riser
