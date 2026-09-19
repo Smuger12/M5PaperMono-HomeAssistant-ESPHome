@@ -62,7 +62,7 @@ esphome:
     - priority: 800
       then:
         - lambda: |-
-            id(controls_view) = false;
+            id(controls_view) = true;
             id(pending_controls_entry) = false;
             id(controls_id).set_active_slot(-1);
             id(selected_control) = -1;
