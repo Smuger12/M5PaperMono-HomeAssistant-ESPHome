@@ -1,73 +1,41 @@
-# Firmware entry point. This is the only firmware YAML the user needs to edit.
 substitutions:
   language: "en"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
-  paper_mono_font: "https://raw.githubusercontent.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
+  paper_mono_font: "https://raw.githubusercontent.com/Smuger12/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
   device_name: paper-mono
-  ha_weather_entity: weather.estacion_meteorologica
-  ha_indoor_temperature_entity: sensor.ws2900_v2_02_03_indoor_temperature
-  ha_indoor_humidity_entity: sensor.ws2900_v2_02_03_indoor_humidity
-  ha_outdoor_pm25_entity: sensor.ws2900_v2_02_03_pm2_5_1
-  ha_indoor_co2_entity: sensor.i_9psl_dioxido_de_carbono
-  ha_indoor_pm25_entity: sensor.i_9psl_pm2_5
-  ha_indoor_voc_entity: sensor.i_9psl_indice_cov
-  ha_solar_power_entity: sensor.ingeteam_pv_internal_total_power
-  ha_house_power_entity: sensor.ingeteam_total_loads_power
-  ha_grid_import_entity: sensor.ingeteam_external_meter_ac_active_power
-  ha_grid_export_entity: sensor.ingeteam_external_meter_ac_active_power_returned
-  ha_battery_charge_entity: sensor.ingeteam_battery_charging_power
-  ha_battery_discharge_entity: sensor.ingeteam_battery_discharging_power
-  ha_battery_soc_entity: sensor.ingeteam_battery_state_of_charge
-  frontlight_default_brightness: "30"
-  frontlight_timeout_seconds: "30"
+  frontlight_default_brightness: "20"
+  frontlight_timeout_seconds: "10"
   sleep_timeout_seconds: "60"
-  screensaver_refresh_minutes: "5"
-  quiet_hours_start: "00:00"
-  quiet_hours_end: "08:00"
+  screensaver_refresh_minutes: "2"
   status_led_low_battery_threshold: "20"
-  ha_notification_text_entity: input_text.paper_mono_notification
-  components_source: github://hectorzin/M5PaperMono-HomeAssistant-ESPHome@main
+  components_source: github://Smuger12/M5PaperMono-HomeAssistant-ESPHome@main
+  ha_weather_entity: weather.dom
+  ha_indoor_temperature_entity: sensor.152832118102940_indoor_temperature
+  ha_outdoor_pm25_entity: sensor.openweathermap_pm2_5
 
 controls:
   blocks:
-    - name: "Salón"
-      nfc_id: "A145E804"
+    - name: "Sypialnia"
       entities:
-        - entity_id: light.sofa
-          name: Luces
-
-        - entity_id: light.pergola
-          name: Pergola
-
-        - entity_id: climate.ac_salon_inteligente
-          name: Clima
-
-        - entity_id: cover.persiana_jardin
-          name: Persiana
-
-        - entity_id: vacuum.lefant_m210_pro_omni_3
-          name: Robot
-
-        - entity_id: media_player.arylic_lp100
-
-        - entity_id: switch.enchufe_lavabo_ninas
-          name: "Enchufe Lavabo Niñas"
-
-
-    - name: "Jardín"
-      nfc_id: "044B2822BE7C80"
-      entities:
-        - entity_id: light.luces_jardin
-          name: "Luces jardín"
-
-        - entity_id: light.pergola
-          name: Pérgola
+        - entity_id: switch.wlancznik_sonoff
+        - entity_id: switch.szafka
+        - entity_id: light.podloga
+        - entity_id: light.biurko
 
 packages:
   paper_mono:
-    url: https://github.com/hectorzin/M5PaperMono-HomeAssistant-ESPHome
+    url: https://github.com/Smuger12/M5PaperMono-HomeAssistant-ESPHome
     ref: main
     files:
       - packages/paper_mono_base.yaml
     refresh: 0s
+
+api:
+  encryption:
+    key: !secret paper_mono__encryption_key
+
+captive_portal:
+
+esphome:
+  name: papermono
