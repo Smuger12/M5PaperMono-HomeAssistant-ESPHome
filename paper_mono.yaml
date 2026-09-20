@@ -1,5 +1,5 @@
 substitutions:
-  language: "en"
+  language: "pl"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   paper_mono_font: "https://raw.githubusercontent.com/Smuger12/M5PaperMono-HomeAssistant-ESPHome/main/fonts/DejaVuSans.ttf"
